@@ -2,7 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HostingPlanController as package;
+use App\Http\Controllers\HostingPlanController;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,4 +19,7 @@ use App\Http\Controllers\HostingPlanController as package;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::post("admin/addPackage",[package::class,'store']);
+Route::post("admin/addpackage",[HostingPlanController::class,'store']);
+Route::post("admin/orderpackage",[OrderController::class,'store']);
+Route::get("showorders/{id}",[OrderController::class,'index']);
+Route::get("showorders",[OrderController::class,'index']);

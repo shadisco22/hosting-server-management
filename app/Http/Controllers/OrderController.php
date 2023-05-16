@@ -10,9 +10,15 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($id=-1)
     {
-        //
+        if($id == -1)
+        return order::all();
+
+        else if(order::find($id))
+            return order::find($id);
+
+        else return ['status' => 'order not found'];
     }
 
     /**
@@ -28,7 +34,15 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $order =new order();
+        $order->customer_id =$request->customer_id;
+        $order->hostingplan_id =$request->hostingplan_id;
+        $order->receipt_path =$request->receipt_path;
+        $order->status =$request->status;
+        $order->final_price =$request->final_price;
+        $order->save();
+
+        return ["status"=>"Done"];
     }
 
     /**
@@ -36,7 +50,7 @@ class OrderController extends Controller
      */
     public function show(order $order)
     {
-        //
+
     }
 
     /**
