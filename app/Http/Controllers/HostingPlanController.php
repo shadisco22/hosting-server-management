@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\hostingPlan;
-use App\Models\details;
 use Illuminate\Http\Request;
 
 class HostingPlanController extends Controller
@@ -13,7 +12,7 @@ class HostingPlanController extends Controller
      */
     public function index()
     {
-        //
+        return ["packages" => hostingPlan::all()];
     }
 
     /**
@@ -30,25 +29,18 @@ class HostingPlanController extends Controller
     public function store(Request $request)
     {
 
-        $details =  new details();
-        $details->space=$request->space;
-        $details->bandwidth=$request->bandwidth;
-        $details->email_accounts=$request->email_accounts;
-        $details->mysql_accounts=$request->mysql_accounts;
-        $details->php_enabled=$request->php_enabled;
-        $details->ssl_certificate=$request->ssl_certificate;
-        $details->duration=$request->duration;
-        $details->yearly_price=$request->yearly_price;
-        $details->yearly_price_outside_syria=$request->yearly_price_outside_syria;
-        $details->save();
-
-        $details_id = details::orderBy('id','desc')->first()->id;
-
         $hostingPlan = new hostingPlan();
-        $hostingPlan->details_id=$details_id;
         $hostingPlan->package_type=$request->package_type;
         $hostingPlan->available=$request->available;
-        $hostingPlan->price=$request->price;
+        $hostingPlan->space=$request->space;
+        $hostingPlan->bandwidth=$request->bandwidth;
+        $hostingPlan->email_accounts=$request->email_accounts;
+        $hostingPlan->mysql_accounts=$request->mysql_accounts;
+        $hostingPlan->php_enabled=$request->php_enabled;
+        $hostingPlan->ssl_certificate=$request->ssl_certificate;
+        $hostingPlan->duration=$request->duration;
+        $hostingPlan->yearly_price=$request->yearly_price;
+        $hostingPlan->yearly_price_outside_syria=$request->yearly_price_outside_syria;
         $hostingPlan->save();
 
         return ["status"=>"Done"];
@@ -68,22 +60,41 @@ class HostingPlanController extends Controller
      */
     public function edit(hostingPlan $hostingPlan)
     {
-        //
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, hostingPlan $hostingPlan)
+    public function update(Request $request, hostingPlan $hostingPlan, $id)
     {
-        //
+
+        $hostingPlan = hostingPlan::find($id);
+        $hostingPlan->package_type=$request->package_type;
+        $hostingPlan->available=$request->available;
+        $hostingPlan->space=$request->space;
+        $hostingPlan->bandwidth=$request->bandwidth;
+        $hostingPlan->email_accounts=$request->email_accounts;
+        $hostingPlan->mysql_accounts=$request->mysql_accounts;
+        $hostingPlan->php_enabled=$request->php_enabled;
+        $hostingPlan->ssl_certificate=$request->ssl_certificate;
+        $hostingPlan->duration=$request->duration;
+        $hostingPlan->yearly_price=$request->yearly_price;
+        $hostingPlan->yearly_price_outside_syria=$request->yearly_price_outside_syria;
+        $hostingPlan->save();
+
+        return ["status" => "Done"];
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(hostingPlan $hostingPlan)
+    public function destroy(hostingPlan $hostingPlan,$id)
     {
-        //
+        $hostingPlan = hostingPlan::find($id);
+        $hostingPlan->delete();
+        return ["status"=>"Done"];
+
     }
 }
