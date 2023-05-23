@@ -40,9 +40,11 @@ class OrderController extends Controller
         $order->receipt_path =$request->receipt_path;
         $order->status =$request->status;
         $order->final_price =$request->final_price;
-        $order->save();
-
+        if($order->save())
+       {
         return ["status"=>"Done"];
+       }
+       else { return ["status"=>"Failed"];}
     }
 
     /**

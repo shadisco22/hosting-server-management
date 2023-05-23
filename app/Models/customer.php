@@ -28,4 +28,8 @@ class customer extends Model
     {
         return $this->hasMany(supportTicket::class);
     }
+    public function notification():HasMany
+    {
+        return $this->hasMany(notification::class);
+    }
 }

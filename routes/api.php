@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HostingPlanController;
@@ -21,9 +22,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post("admin/addpackage",[HostingPlanController::class,'store']);
-Route::get("showpackages",[HostingPlanController::class,'index']);
 Route::delete("admin/deletepackage/{id}",[HostingPlanController::class,'destroy']);
 Route::post("admin/updatepackage/{id}",[HostingPlanController::class,'update']);
+Route::get("showpackages",[HostingPlanController::class,'index']);
+Route::get("admin/showcustomers",[CustomerController::class,'index']);
+Route::delete("admin/deletecustomer/{id}",[CustomerController::class,'destroy']);
 Route::post("orderpackage",[OrderController::class,'store']);
 Route::get("showorders/{id}",[OrderController::class,'index']);
 Route::get("showorders",[OrderController::class,'index']);

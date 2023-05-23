@@ -41,10 +41,11 @@ class HostingPlanController extends Controller
         $hostingPlan->duration=$request->duration;
         $hostingPlan->yearly_price=$request->yearly_price;
         $hostingPlan->yearly_price_outside_syria=$request->yearly_price_outside_syria;
-        $hostingPlan->save();
-
+       if($hostingPlan->save())
+       {
         return ["status"=>"Done"];
-
+       }
+       else { return ["status"=>"Failed"];}
     }
 
     /**
@@ -81,9 +82,11 @@ class HostingPlanController extends Controller
         $hostingPlan->duration=$request->duration;
         $hostingPlan->yearly_price=$request->yearly_price;
         $hostingPlan->yearly_price_outside_syria=$request->yearly_price_outside_syria;
-        $hostingPlan->save();
-
-        return ["status" => "Done"];
+        if($hostingPlan->save())
+       {
+        return ["status"=>"Done"];
+       }
+       else { return ["status"=>"Failed"];}
 
     }
 
@@ -93,8 +96,11 @@ class HostingPlanController extends Controller
     public function destroy(hostingPlan $hostingPlan,$id)
     {
         $hostingPlan = hostingPlan::find($id);
-        $hostingPlan->delete();
+        if($hostingPlan->delete())
+       {
         return ["status"=>"Done"];
+       }
+       else { return ["status"=>"Failed"];}
 
     }
 }

@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\customer;
+use App\Models\notification;
 use Illuminate\Http\Request;
 
-class CustomerController extends Controller
+class NotificationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return ["customer" => customer::all()];
+        //
     }
 
     /**
@@ -34,7 +34,7 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(customer $customer)
+    public function show(notification $notification)
     {
         //
     }
@@ -42,7 +42,7 @@ class CustomerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(customer $customer)
+    public function edit(notification $notification)
     {
         //
     }
@@ -50,7 +50,7 @@ class CustomerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, customer $customer)
+    public function update(Request $request, notification $notification)
     {
         //
     }
@@ -58,13 +58,8 @@ class CustomerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(customer $customer,$id)
+    public function destroy(notification $notification)
     {
-        $customer = customer::find($id);
-        if($customer->delete())
-       {
-        return ["status"=>"Done"];
-       }
-       else { return ["status"=>"Failed"];}
+        //
     }
 }
