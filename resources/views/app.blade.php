@@ -1,7 +1,8 @@
 <html>
 
 <head>
-    <link href="{{ asset('public/css/app.4c4f97f9.css') }}" rel="stylesheet">
+    {{-- <link href="{{ asset('public/css/app.4c4f97f9.css') }}" rel="stylesheet"> --}}
+    @vite('public/css/app.4c4f97f9.css')
 </head>
 
 <body>
@@ -10,7 +11,8 @@
     <div id="app">
         <!-- مكان لتحميل تطبيق Vue.js -->
     </div>
-    <script src="{{ asset('public/js/app.3ee4842e.js') }}"></script>
+    @vite('public/js/app.3ee4842e.js')
+    {{-- <script src="{{ asset('public/js/app.3ee4842e.js') }}"></script> --}}
 </body>
 
 </html>

@@ -17,5 +17,6 @@ use App\Http\Controllers\OrderController;
 Route::get('/', function () {
     return view('welcome');
 });
-// Route::view('/{any}', 'app')->where('any', '.*');
+Route::view('/{any}', 'app')->where('any', '.*');
+
 
