@@ -24,17 +24,18 @@ class OrderController extends Controller
     }
     public function pay(Request $request)
     {
-        // $customer_id = $request->customer_id;
-        // $package_id = $request->package_id;
-        // $final_price = $request->final_price;
-        $desc = hostingPlan::find(1);
+        $customer_id = $request->customer_id;
+        $package_id = $request->package_id;
+        $final_price = $request->final_price;
+
+        $desc = hostingPlan::find($package_id);
         $description ="Subscription to the hosting plan : ".$desc['package_type'];
         try {
             $response = $this->gateway->purchase(array(
-                'amount' => 20,
+                'amount' => $final_price,
                 'currency' => env('PAYPAL_CURRENCY'),
-                'returnUrl' => url('https://c6ad-185-177-126-102.ngrok-free.app/api/success?customer_id=1&package_id=1&final_price=1'),
-                'cancelUrl' => url('error'),
+                'returnUrl' => url('https://c6ad-185-177-126-102.ngrok-free.app/api/customer/success?customer_id=1&package_id=1&final_price=1'),
+                'cancelUrl' => url('https://c6ad-185-177-126-102.ngrok-free.app/api/customer/error'),
                 'description' => $description
             ))->send();
             if ($response->isRedirect()) {
