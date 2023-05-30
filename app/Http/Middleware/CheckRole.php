@@ -19,7 +19,6 @@ class CheckRole
         if (Auth::check() && Auth::user()->role == $role) {
             return $next($request);
         }
-
         return \response()->json(['error' => 'Unauthorized'],401);
     }
 }

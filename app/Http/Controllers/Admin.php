@@ -16,7 +16,7 @@ class Admin extends Controller
         $user-> password = $request->input('password');
         $user-> role = $request->input('operater');
         $user-> save();
-        return response()->json($user);
+        return response()->json(['message' => 'success']);
     }
 
     public function update(Request $request,$id)
