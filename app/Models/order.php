@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class order extends Model
 {
     use HasFactory;
-    protected $fillable = ['customer_id','hostingplan_id','receipt','status','final_price'];
+    protected $fillable = ['customer_id','hostingplan_id','receipt','status','final_price','paypal_id','currency'];
 
     public function customer():BelongsTo
     {

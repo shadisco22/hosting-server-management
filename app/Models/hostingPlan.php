@@ -11,7 +11,6 @@ class hostingPlan extends Model
 {
     use HasFactory;
     protected $fillable = [
-    'details_id',
     'package_type',
     'available',
     'space',

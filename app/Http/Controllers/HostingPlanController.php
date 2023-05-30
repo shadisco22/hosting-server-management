@@ -28,7 +28,7 @@ class HostingPlanController extends Controller
      */
     public function store(Request $request)
     {
-
+        try{
         $hostingPlan = new hostingPlan();
         $hostingPlan->package_type=$request->package_type;
         $hostingPlan->available=$request->available;
@@ -45,7 +45,12 @@ class HostingPlanController extends Controller
        {
         return ["status"=>"Done"];
        }
-       else { return ["status"=>"Failed"];}
+       else {
+        return ["status"=>"Failed"];
+    }
+    }catch(Exception $e){
+        return ["status"=>"Failed"];
+    }
     }
 
     /**

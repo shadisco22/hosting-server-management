@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id');
             $table->foreignId('hostingplan_id');
-            $table->string('receipt_path');
+            $table->string('paymentId');
+            $table->string('currency');
+            $table->string('receipt_path')->nullable();
             $table->string('status');
             $table->double('final_price');
             $table->timestamps();

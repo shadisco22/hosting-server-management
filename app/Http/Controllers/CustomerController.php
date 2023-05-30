@@ -7,6 +7,23 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
+    public function addCompany(Request $request)
+    {
+        $validated = $request->validate([
+            'company_name' => 'required'
+        ]);
+
+        $user = auth()->user();
+
+        Customer::create(['user_id' => $user->id , 'company_name' => $validated['company_name']]);
+        $user->role = 'customer' ;
+        $user->save();
+
+        return response()->json('company added successfully');
+    }
+
+
+
     /**
      * Display a listing of the resource.
      */
@@ -52,7 +69,13 @@ class CustomerController extends Controller
      */
     public function update(Request $request, customer $customer)
     {
-        //
+        $user = User::where('id', $id)->whereHas('customer', function ($query) {
+            $query->whereNotNull('company_name');
+        })->first();
+// Update the role attribute for user
+            $user->role = 'customer';
+            $user->save();
+            return response()->json('role updated successfully');
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HostingPlanController;
@@ -18,17 +19,47 @@ use App\Models\hostingPlan;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Login/register routes
+
+Route::post('/register', [Auth::class, 'register']);
+Route::post('/login', [Auth::class, 'login']);
+Route::post('/logout', [Auth::class, 'logout'])->middleware('auth:sanctum');
+
+// Customer routes
+Route::group(['middleware' => 'checkRole:customer'], function () {
+
+    Route::post('customer/add-company', [\App\Http\Controllers\CustomerController::class, 'addCompany']);
+
+    Route::post('customer/pay', [OrderController::class, 'pay'])->name('pay');
+    Route::get('customer/success', [OrderController::class, 'success']);
+    Route::get('customer/error', [OrderController::class, 'error']);
+    Route::get("customer/showpackages",[HostingPlanController::class,'index']);
+    Route::post("customer/orderpackage",[OrderController::class,'store']);
 });
-Route::post("admin/addpackage",[HostingPlanController::class,'store']);
-Route::delete("admin/deletepackage/{id}",[HostingPlanController::class,'destroy']);
-Route::post("admin/updatepackage/{id}",[HostingPlanController::class,'update']);
-Route::get("showpackages",[HostingPlanController::class,'index']);
-Route::get("admin/showcustomers",[CustomerController::class,'index']);
-Route::delete("admin/deletecustomer/{id}",[CustomerController::class,'destroy']);
-Route::post("orderpackage",[OrderController::class,'store']);
-Route::get("showorders/{id}",[OrderController::class,'index']);
-Route::get("showorders",[OrderController::class,'index']);
+
+// Admin routes
+Route::group(['middleware' => 'checkRole:admin'], function () {
 
 
+    Route::post('admin/create-operater', [\App\Http\Controllers\Admin::class, 'createOperater']);
+    Route::get('admin/show-operater', [\App\Http\Controllers\Admin::class, 'show']);
+
+    Route::post("admin/addpackage",[HostingPlanController::class,'store']);
+    Route::delete("admin/deletepackage/{id}",[HostingPlanController::class,'destroy']);
+    Route::post("admin/updatepackage/{id}",[HostingPlanController::class,'update']);
+    Route::get("admin/showpackages",[HostingPlanController::class,'index']);
+    Route::get("admin/showcustomers",[CustomerController::class,'index']);
+    Route::delete("admin/deletecustomer/{id}",[CustomerController::class,'destroy']);
+    Route::get("admin/showorders/{id}",[OrderController::class,'index']);
+    Route::get("admin/showorders",[OrderController::class,'index']);
+
+
+
+});
+
+// Operator routes
+Route::group(['middleware' => 'checkRole:operator'], function () {
+
+    Route::get("operator/showorders/{id}",[OrderController::class,'index']);
+    Route::get("operator/showorders",[OrderController::class,'index']);
+});
