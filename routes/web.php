@@ -14,9 +14,7 @@ use App\Http\Controllers\OrderController;
 |
 */
 
-Route::get('/shadi', function () {
+Route::get('/', function () {
     return view('welcome');
 });
 Route::view('/{any}', 'app')->where('any', '.*');
-
-
