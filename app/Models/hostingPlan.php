@@ -10,7 +10,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class hostingPlan extends Model
 {
     use HasFactory;
-    protected $fillable = ['details_id','package_type','available','price'];
+    protected $fillable = [
+    'package_type',
+    'available',
+    'space',
+    'bandwidth',
+    'email_accounts',
+    'mysql_accounts',
+    'php_enabled',
+    'ssl_certificate',
+    'duration',
+    'yearly_price',
+    'yearly_price_outside_syria'];
 
     public function customer_hosting_plan():HasMany
     {
@@ -19,9 +30,5 @@ class hostingPlan extends Model
     public function order():HasMany
     {
         return $this->hasMany(order::class);
-    }
-    public function detail():BelongsTo
-    {
-        return $this->belongsTo(details::class);
     }
 }

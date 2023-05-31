@@ -13,10 +13,17 @@ return new class extends Migration
     {
         Schema::create('hosting_plans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('details_id')->uniqid();
             $table->string('package_type');
             $table->boolean('available');
-            $table->double('price');
+            $table->string('space');
+            $table->string('bandwidth');
+            $table->string('email_accounts');
+            $table->string('mysql_accounts');
+            $table->string('php_enabled');
+            $table->string('ssl_certificate');
+            $table->string('duration');
+            $table->double('yearly_price');
+            $table->double('yearly_price_outside_syria');
             $table->timestamps();
         });
     }
