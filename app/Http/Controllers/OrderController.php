@@ -34,8 +34,8 @@ class OrderController extends Controller
             $response = $this->gateway->purchase(array(
                 'amount' => $final_price,
                 'currency' => env('PAYPAL_CURRENCY'),
-                'returnUrl' => url('https://c6ad-185-177-126-102.ngrok-free.app/api/customer/success?customer_id=1&package_id=1&final_price=1'),
-                'cancelUrl' => url('https://c6ad-185-177-126-102.ngrok-free.app/api/customer/error'),
+                'returnUrl' => url('https://0725-185-177-126-128.ngrok-free.app/api/customer/success?customer_id=1&package_id=1&final_price=1'),
+                'cancelUrl' => url('https://0725-185-177-126-128.ngrok-free.app/api/customer/error'),
                 'description' => $description
             ))->send();
             if ($response->isRedirect()) {

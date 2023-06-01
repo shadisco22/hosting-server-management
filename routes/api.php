@@ -26,7 +26,7 @@ Route::post('/login', [Auth::class, 'login']);
 Route::post('/logout', [Auth::class, 'logout'])->middleware('auth:sanctum');
 
 // Customer routes
-Route::group(['middleware' => 'checkRole:customer'], function () {
+Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('customer/add-company', [\App\Http\Controllers\CustomerController::class, 'addCompany']);
 
@@ -38,7 +38,7 @@ Route::group(['middleware' => 'checkRole:customer'], function () {
 });
 
 // Admin routes
-Route::group(['middleware' => 'checkRole:admin'], function () {
+Route::group(['middleware' => 'auth:sanctum'], function () {
 
 
     Route::post('admin/create-operater', [\App\Http\Controllers\Admin::class, 'createOperater']);
@@ -58,7 +58,7 @@ Route::group(['middleware' => 'checkRole:admin'], function () {
 });
 
 // Operator routes
-Route::group(['middleware' => 'checkRole:operator'], function () {
+Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get("operator/showorders/{id}",[OrderController::class,'index']);
     Route::get("operator/showorders",[OrderController::class,'index']);
