@@ -3,24 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\customer;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+
 
 class CustomerController extends Controller
 {
-    public function addCompany(Request $request)
-    {
-        $validated = $request->validate([
-            'company_name' => 'required'
-        ]);
 
-        $user = auth()->user();
+    // public function addCompany(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'company_name' => 'required'
+    //     ]);
 
-        Customer::create(['user_id' => $user->id , 'company_name' => $validated['company_name']]);
-        $user->role = 'customer' ;
-        $user->save();
+    //     $user = auth()->user();
 
-        return response()->json('company added successfully');
-    }
+    //     Customer::create(['user_id' => $user->id, 'company_name' => $validated['company_name']]);
+    //     $user->role = 'customer';
+    //     $user->save();
+
+    //     return response()->json('company added successfully');
+    // }
 
 
 
@@ -45,7 +50,7 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // store customer, user -> customer
     }
 
     /**
@@ -67,27 +72,69 @@ class CustomerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, customer $customer)
+    public function update(Request $request, customer $customer, $id)
     {
-        $user = User::where('id', $id)->whereHas('customer', function ($query) {
-            $query->whereNotNull('company_name');
-        })->first();
-// Update the role attribute for user
-            $user->role = 'customer';
-            $user->save();
-            return response()->json('role updated successfully');
+        // Update customer profile
+
+        $validator = Validator::make($request->all(), [
+            'f_name' => 'required|string|max:255',
+            'l_name' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'phone' => 'required|string|max:255',
+            'password' => 'required|string|min:4',
+            'company_name' => 'required|string|min:1'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+        $customer = customer::find($id);
+        if ($customer != null) {
+            $user = User::find($customer->user_id);
+            if ($user != null) {
+                User::whereId($user->id)->update([
+                    'f_name' => $request->f_name,
+                    'l_name' => $request->l_name,
+                    'address' => $request->address,
+                    'phone' => $request->phone,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                ]);
+                customer::whereId($customer->id)->update([
+                    'company_name' => $request->company_name
+                ]);
+                return response()->json(["status" => "Updated successfully"]);
+            } else {
+                return response()->json(["status" => "Customer has no record in 'user' table"]);
+            }
+        } else {
+            return response()->json(["status" => "Customer does not exist"]);
+        }
+
+
+
+
+
+        // $user = User::where('id', $id)->whereHas('customer', function ($query) {
+        //     $query->whereNotNull('company_name');
+        // })->first();
+        // // Update the role attribute for user
+        // $user->role = 'customer';
+        // $user->save();
+        // return response()->json('role updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(customer $customer,$id)
+    public function destroy(customer $customer, $id)
     {
         $customer = customer::find($id);
-        if($customer->delete())
-       {
-        return ["status"=>"Done"];
-       }
-       else { return ["status"=>"Failed"];}
+        if ($customer->delete()) {
+            return ["status" => "Done"];
+        } else {
+            return ["status" => "Failed"];
+        }
     }
 }

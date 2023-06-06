@@ -29,13 +29,14 @@ Route::post('/logout', [Auth::class, 'logout'])->middleware('auth:sanctum');
 
 // Customer routes
 Route::group(['middleware' => ['auth:sanctum', 'checkRole:Customer']], function () {
-    Route::post('customer/add-company', [\App\Http\Controllers\CustomerController::class, 'addCompany']);
+    //Route::post('customer/add-company', [\App\Http\Controllers\CustomerController::class, 'addCompany']);
 
     Route::post('customer/pay', [OrderController::class, 'pay'])->name('pay');
     Route::get('customer/success', [OrderController::class, 'success']);
     Route::get('customer/error', [OrderController::class, 'error']);
     Route::get("customer/showpackages", [HostingPlanController::class, 'index']);
     Route::post("customer/orderpackage", [OrderController::class, 'store']);
+    Route::put("customer/editprofile/{id}", [CustomerController::class, 'update']);
 });
 
 // Admin routes
