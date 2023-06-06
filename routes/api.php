@@ -20,7 +20,9 @@ use App\Models\hostingPlan;
 */
 
 // Login/register routes
-
+Route::get('/login', function(){
+    return response()->json("Not authenticated", 401);
+})->name("login");
 Route::post('/register', [Auth::class, 'register']);
 Route::post('/login', [Auth::class, 'login']);
 Route::post('/logout', [Auth::class, 'logout'])->middleware('auth:sanctum');
@@ -45,7 +47,7 @@ Route::group(['middleware' => ['auth:sanctum', 'checkRole:Admin']], function () 
 
     Route::post("admin/addpackage", [HostingPlanController::class, 'store']);
     Route::delete("admin/deletepackage/{id}", [HostingPlanController::class, 'destroy']);
-    Route::post("admin/updatepackage/{id}", [HostingPlanController::class, 'update']);
+    Route::put("admin/updatepackage/{id}", [HostingPlanController::class, 'update']);
     Route::get("admin/showpackages", [HostingPlanController::class, 'index']);
     Route::get("admin/showcustomers", [CustomerController::class, 'index']);
     Route::delete("admin/deletecustomer/{id}", [CustomerController::class, 'destroy']);
