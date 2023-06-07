@@ -18,6 +18,7 @@ return new class extends Migration
             $table->double('price');
             $table->date('expiry_date');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

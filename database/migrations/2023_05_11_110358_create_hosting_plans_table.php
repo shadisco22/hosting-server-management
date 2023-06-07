@@ -25,6 +25,7 @@ return new class extends Migration
             $table->double('yearly_price');
             $table->double('yearly_price_outside_syria');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

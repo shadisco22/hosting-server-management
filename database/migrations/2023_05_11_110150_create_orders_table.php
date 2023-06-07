@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('status');
             $table->double('final_price');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

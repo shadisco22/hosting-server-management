@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('seen_by_admin');
             $table->date('seen_by_customer');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

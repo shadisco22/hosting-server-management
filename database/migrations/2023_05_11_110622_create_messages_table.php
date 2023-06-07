@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('sender');
             $table->text('message');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

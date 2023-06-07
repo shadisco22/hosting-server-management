@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->uniqid();
             $table->string('company_name')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
