@@ -9,14 +9,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class customerHostingPlan extends Model
 {
     use HasFactory;
-    protected $fillable = ['customer_id','hostingplan_id','price','expiry_date'];
+    protected $fillable = ['customer_id', 'hostingplan_id', 'price', 'expiry_date'];
 
-    public function customer():BelongsTo
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(customer::class);
     }
-    public function hosting_plan():BelongsTo
+    public function hosting_plan(): BelongsTo
     {
-        return $this->belongsTo(hostingPlan::class);
+        return $this->belongsTo(hostingPlan::class, 'hostingplan_id');
     }
 }

@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class message extends Model
 {
     use HasFactory;
-    protected $fillable = ['supportticket_id','sender','message'];
+    protected $fillable = ['supportticket_id', 'sender', 'message'];
 
-    public function support_ticket():BelongsTo
+    public function support_ticket(): BelongsTo
     {
-        return $this->belongsTo(supportTicket::class);
+        return $this->belongsTo(supportTicket::class, 'supportticket_id');
     }
 }

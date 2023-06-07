@@ -11,14 +11,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class order extends Model
 {
     use HasFactory;
-    protected $fillable = ['customer_id','hostingplan_id','receipt','status','final_price','paypal_id','currency'];
+    protected $fillable = ['customer_id', 'hostingplan_id', 'receipt', 'status', 'final_price', 'paypal_id', 'currency'];
 
-    public function customer():BelongsTo
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(customer::class);
     }
-    public function hosting_plan():BelongsTo
+    public function hosting_plan(): BelongsTo
     {
-        return $this->belongsTo(hostingPlan::class);
+        return $this->belongsTo(hostingPlan::class, 'hostingplan_id');
     }
 }
