@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\Admin;
 use App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -43,8 +44,9 @@ Route::group(['middleware' => ['auth:sanctum', 'checkRole:Customer']], function 
 Route::group(['middleware' => ['auth:sanctum', 'checkRole:Admin']], function () {
 
 
-    Route::post('admin/createoperator', [\App\Http\Controllers\Admin::class, 'createOperator']);
-    Route::get('admin/showusers', [\App\Http\Controllers\Admin::class, 'show']);
+    Route::post('admin/createoperator', [Admin::class, 'createOperator']);
+    Route::delete("admin/deleteoperator/{id}", [Admin::class, 'destroy']);
+    Route::get('admin/showusers', [Admin::class, 'show']);
 
     Route::post("admin/addpackage", [HostingPlanController::class, 'store']);
     Route::delete("admin/deletepackage/{id}", [HostingPlanController::class, 'destroy']);

@@ -48,7 +48,17 @@ class Admin extends Controller
         return response()->json(['users' => $users,'customers' => $customers]) ;
 
     }
-
+    public function destroy(User $operator, $id)
+    {
+        $operator = User::find($id);
+        if ($operator->delete()) {
+            return response()->json(['status' => 'success',
+                                     'message' => 'Operator deleted successfully']);
+        } else {
+            return response()->json(['status' => 'failed',
+                                     'message' => 'Operator deletion failed']);
+        }
+    }
 }
 
 
