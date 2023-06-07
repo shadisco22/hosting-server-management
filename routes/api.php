@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth:sanctum', 'checkRole:Customer']], function 
     Route::get("customer/showpackages", [HostingPlanController::class, 'index']);
     Route::post("customer/orderpackage", [OrderController::class, 'store']);
     Route::put("customer/editprofile/{id}", [CustomerController::class, 'update']);
+    Route::post('customer/alharam', [OrderController::class, 'store']);
 });
 
 // Admin routes

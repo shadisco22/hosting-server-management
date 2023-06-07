@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Omnipay\Omnipay;
 use App\Models\hostingPlan;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
@@ -116,15 +117,15 @@ class OrderController extends Controller
         }
         $image_file = $request->file('receipt');
         //image name format is : c_id-p_id-time.extension as (customer_id-plan_id-time.extension)
-        $image_name = "c_" . $request->customer_id . "-p_" . $request->hostingplan_id . "-" . time() . $image_file->extension();
-        $image_file->storeAs('receipts', $image_name);
+        $image_name = "c_" . $request->customer_id . "-p_" . $request->hostingplan_id . "-" . time() .".". $image_file->extension();
+        $path = $image_file->storeAs('receipts', $image_name);
 
         $order = new order();
         $order->customer_id = $request->customer_id;
         $order->hostingplan_id = $request->hostingplan_id;
-        $order->receipt_path = $image_file->path() . "/" . $image_name;
+        $order->receipt_path ="storage/app/".$path;
         $order->currency = env('PAYPAL_CURRENCY');
-        $order->paypal_id = null;
+        $order->paymentId = null;
         $order->status = "waiting";
         $order->final_price = $request->final_price;
         if ($order->save()) {
