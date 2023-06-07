@@ -43,13 +43,16 @@ class HostingPlanController extends Controller
         $hostingPlan->yearly_price_outside_syria=$request->yearly_price_outside_syria;
        if($hostingPlan->save())
        {
-        return ["status"=>"Done"];
+        return response()->json(['status' => 'success',
+                'message' => 'Hosting plan added successfully']);
        }
        else {
-        return ["status"=>"Failed"];
+        return response()->json(['status' => 'failed',
+                                 'message' => 'Adding hosting plan failed']);
     }
     }catch(Exception $e){
-        return ["status"=>"Failed"];
+        return response()->json(['status' => 'failed',
+                                 'message' => 'Can`t connect to database']);
     }
     }
 
@@ -89,9 +92,11 @@ class HostingPlanController extends Controller
         $hostingPlan->yearly_price_outside_syria=$request->yearly_price_outside_syria;
         if($hostingPlan->save())
        {
-        return ["status"=>"Done"];
+        return response()->json(['status' => 'success',
+                                 'message' => 'Hosting plan updated successfully']);
        }
-       else { return ["status"=>"Failed"];}
+       else { return response()->json(['status' => 'failed',
+                                        'message' => 'Updating hosting plan failed']);}
 
     }
 
@@ -103,9 +108,11 @@ class HostingPlanController extends Controller
         $hostingPlan = hostingPlan::find($id);
         if($hostingPlan->delete())
        {
-        return ["status"=>"Done"];
+        return response()->json(['status' => 'success',
+                                 'message' => 'Hosting plan deleted successfully']);
        }
-       else { return ["status"=>"Failed"];}
+       else { return response()->json(['status' => 'failed',
+                                       'message' => 'Hosting plan deletion failed']);}
 
     }
 }

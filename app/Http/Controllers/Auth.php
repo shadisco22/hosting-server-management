@@ -46,7 +46,9 @@ class Auth extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()
-            ->json(['message' => 'success', 'access_token' => $token, 'token_type' => 'Bearer',]);
+            ->json(['status' => 'success',
+                    'message' => 'User registered successfully',
+                    'access_token' => $token, 'token_type' => 'Bearer']);
     }
 
 
@@ -55,7 +57,7 @@ class Auth extends Controller
     {
         if (!\Illuminate\Support\Facades\Auth::attempt($request->only('email', 'password'))) {
             return response()
-                ->json(['message' => 'Unauthorized']);
+                ->json(['status' => 'failed','message' => 'Unauthorized']);
         }
 
 
@@ -64,7 +66,9 @@ class Auth extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()
-            ->json(['message' => 'success', 'access_token' => $token, 'token_type' => 'Bearer', 'role' => $user->role]);
+            ->json(['status' => 'success',
+                    'message' => 'User loged in successfully',
+                    'access_token' => $token, 'token_type' => 'Bearer', 'role' => $user->role]);
     }
 
     public function logout(Request $request)

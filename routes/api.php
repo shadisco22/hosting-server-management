@@ -43,21 +43,20 @@ Route::group(['middleware' => ['auth:sanctum', 'checkRole:Customer']], function 
 Route::group(['middleware' => ['auth:sanctum', 'checkRole:Admin']], function () {
 
 
-    Route::post('admin/create-operater', [\App\Http\Controllers\Admin::class, 'createOperater']);
-    Route::get('admin/show-operater', [\App\Http\Controllers\Admin::class, 'show']);
+    Route::post('admin/createoperator', [\App\Http\Controllers\Admin::class, 'createOperator']);
+    Route::get('admin/showusers', [\App\Http\Controllers\Admin::class, 'show']);
 
     Route::post("admin/addpackage", [HostingPlanController::class, 'store']);
     Route::delete("admin/deletepackage/{id}", [HostingPlanController::class, 'destroy']);
     Route::put("admin/updatepackage/{id}", [HostingPlanController::class, 'update']);
     Route::get("admin/showpackages", [HostingPlanController::class, 'index']);
-    Route::get("admin/showcustomers", [CustomerController::class, 'index']);
     Route::delete("admin/deletecustomer/{id}", [CustomerController::class, 'destroy']);
     Route::get("admin/showorders/{id}", [OrderController::class, 'index']);
     Route::get("admin/showorders", [OrderController::class, 'index']);
 });
 
 // Operator routes
-Route::group(['middleware' => ['auth:sanctum', 'checkRole:Operater']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'checkRole:Operator']], function () {
 
     Route::get("operator/showorders", [OrderController::class, 'index']);
     Route::get("operator/showorders/{id}", [OrderController::class, 'index']);

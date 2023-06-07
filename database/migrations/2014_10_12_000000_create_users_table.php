@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('f_name');
             $table->string('l_name');
-            $table->enum('role', ['Admin', 'Operater', 'Customer'])->default('Customer');
+            $table->enum('role', ['Admin', 'Operator', 'Customer'])->default('Customer');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

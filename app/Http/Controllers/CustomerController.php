@@ -34,7 +34,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        return ["customer" => customer::all()];
+        //
     }
 
     /**
@@ -104,12 +104,15 @@ class CustomerController extends Controller
                 customer::whereId($customer->id)->update([
                     'company_name' => $request->company_name
                 ]);
-                return response()->json(["status" => "Updated successfully"]);
+                return response()->json(['status' =>'success',
+                                         'message' => 'Customer updated successfully']);
             } else {
-                return response()->json(["status" => "Customer has no record in 'user' table"]);
+                return response()->json(['status' => 'failed',
+                                         'message' => 'Customer has no record in `user` table']);
             }
         } else {
-            return response()->json(["status" => "Customer does not exist"]);
+            return response()->json(['status' => 'failed',
+                                     'message' => 'Customer does not exist']);
         }
 
 
@@ -132,9 +135,11 @@ class CustomerController extends Controller
     {
         $customer = customer::find($id);
         if ($customer->delete()) {
-            return ["status" => "Done"];
+            return response()->json(['status' => 'success',
+                                     'message' => 'Customer deleted successfully']);
         } else {
-            return ["status" => "Failed"];
+            return response()->json(['status' => 'failed',
+                                     'message' => 'Customer deletion failed']);
         }
     }
 }
