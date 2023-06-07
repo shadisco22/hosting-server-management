@@ -82,6 +82,12 @@ class Admin extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
+            activities_log::create([
+                'user_id' => Auth::id(),
+                'activity_type' => 'update',
+                'on_table' => 'users',
+                'record_id' => $user->id
+            ]);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Operator updated successfully'
