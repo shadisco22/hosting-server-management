@@ -29,7 +29,7 @@ class OrderController extends Controller
         $final_price = $request->final_price;
 
         $desc = hostingPlan::find($package_id);
-        $description ="Subscription to the hosting plan : ".$desc['package_type'];
+        $description = "Subscription to the hosting plan : " . $desc['package_type'];
         try {
             $response = $this->gateway->purchase(array(
                 'amount' => $final_price,
@@ -68,12 +68,11 @@ class OrderController extends Controller
                 $order->status = "waiting";
                 $order->final_price = $final_price;
 
-                if($order->save())
-                {
+                if ($order->save()) {
                     return redirect()->to('http://localhost:8080/Customer_mainpage?status=Payment_Complete')->send();
                 }
             } else {
-                    return redirect()->to('http://localhost:8080/Customer_mainpage?status=Server_Error')->send();
+                return redirect()->to('http://localhost:8080/Customer_mainpage?status=Server_Error')->send();
             }
         }
     }
@@ -81,13 +80,13 @@ class OrderController extends Controller
     {
         return redirect()->to('http://localhost:8080/Customer_mainpage?status=Customer_Declined_Payment')->send();
     }
-    public function index($id=-1)
+    public function index($id = -1)
     {
 
-        if($id == -1)
-        return order::all();
+        if ($id == -1)
+            return order::all();
 
-        else if(order::find($id))
+        else if (order::find($id))
             return order::find($id);
 
         else return ['status' => 'order not found'];
@@ -106,19 +105,39 @@ class OrderController extends Controller
      */
     public function store(Request $request) // For al-haram payment (image upload)
     {
-        $order =new order();
-        $order->customer_id =$request->customer_id;
-        $order->hostingplan_id =$request->hostingplan_id;
-        $order->receipt_path =$request->receipt_path;
-        $order->currency =$request->currency;
-        $order->paypal_id =$request->paypal_id;
-        $order->status =$request->status;
-        $order->final_price =$request->final_price;
-        if($order->save())
-       {
-        return ["status"=>"Done"];
-       }
-       else { return ["status"=>"Failed"];}
+        $validator = Validator::make($request->all(), [
+            'customer_id' => 'required',
+            'hostingplan_id' => 'required',
+            'final_price' => 'required',
+            'receipt' => 'required|file|mimes:jpeg,png,jpg'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+        $image_file = $request->file('receipt');
+        //image name format is : c_id-p_id-time.extension as (customer_id-plan_id-time.extension)
+        $image_name = "c_" . $request->customer_id . "-p_" . $request->hostingplan_id . "-" . time() . $image_file->extension();
+        $image_file->storeAs('receipts', $image_name);
+
+        $order = new order();
+        $order->customer_id = $request->customer_id;
+        $order->hostingplan_id = $request->hostingplan_id;
+        $order->receipt_path = $image_file->path() . "/" . $image_name;
+        $order->currency = env('PAYPAL_CURRENCY');
+        $order->paypal_id = null;
+        $order->status = "waiting";
+        $order->final_price = $request->final_price;
+        if ($order->save()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Order added successfully'
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Order adding failed'
+            ]);
+        }
     }
 
     /**
@@ -126,7 +145,6 @@ class OrderController extends Controller
      */
     public function show(order $order)
     {
-
     }
 
     /**
@@ -153,4 +171,3 @@ class OrderController extends Controller
         //
     }
 }
-?>
