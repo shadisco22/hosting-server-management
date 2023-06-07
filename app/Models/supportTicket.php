@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class supportTicket extends Model
 {
-    use HasFactory;
+    use HasFactory ,SoftDeletes;
     protected $fillable = ['customer_id','user_id','open_time','close_time','status'];
 
     public function user():BelongsTo
