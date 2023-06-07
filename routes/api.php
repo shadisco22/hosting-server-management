@@ -44,8 +44,8 @@ Route::group(['middleware' => ['auth:sanctum', 'checkRole:Customer']], function 
 // Admin routes
 Route::group(['middleware' => ['auth:sanctum', 'checkRole:Admin']], function () {
 
-
     Route::post('admin/createoperator', [Admin::class, 'createOperator']);
+    Route::put('admin/updateoperator/{id}',[Admin::class , 'update']);
     Route::delete("admin/deleteoperator/{id}", [Admin::class, 'destroy']);
     Route::get('admin/showusers', [Admin::class, 'show']);
 
