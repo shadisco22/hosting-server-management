@@ -12,7 +12,7 @@ class ActivitiesLogController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(['logs' => activities_log::all()]);
     }
 
     /**

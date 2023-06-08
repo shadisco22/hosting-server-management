@@ -18,7 +18,7 @@ return new class extends Migration
                 'create', 'update', 'delete', 'approve',
                 'declined', 'open', 'close'
             ]);
-            $table->enum('on_table', ['users', 'customers', 'orders', 'hosting_plans', 'support_tickets']);
+            $table->enum('on_table', ['users', 'customers', 'orders', 'hosting_plans', 'support_tickets'])->default('users');
             $table->integer('record_id');
             $table->timestamps();
             $table->softDeletes();

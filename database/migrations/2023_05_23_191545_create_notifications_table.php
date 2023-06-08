@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id');
+            $table->foreignId('customer_hosting_plan_id');
+            $table->enum('notification_type',['package_expiration','ticket_message','package_approvement']);
             $table->string('content');
-            $table->date('seen_by_admin');
-            $table->date('seen_by_customer');
+            $table->date('seen_by_customer')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

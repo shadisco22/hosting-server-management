@@ -24,7 +24,8 @@ class Auth extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors());
+            return response()->json(['status' => 'failed',
+                                     'message' => $validator->errors()]);
         }
 
         $user = User::create([

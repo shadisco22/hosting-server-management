@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\customer;
 use App\Models\User;
+use App\Models\hostingPlan;
+use App\Models\notification;
+use App\Models\customerHostingPlan;
+use App\Models\activities_log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-
+use Carbon\Carbon;
 
 class CustomerController extends Controller
 {
@@ -32,6 +36,62 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function customerInfo()
+    {
+        //Auth::id()
+        $customer_id = 1;
+        $customer = customer::find($customer_id);
+        if($customer != null){
+            $user = User::find($customer->user_id);
+            if($user != null){
+                $cus_hostingplans = customer::find($customer_id)->customerHostingPlan()->get();
+                $days_left = -1;
+                foreach($cus_hostingplans as $cus_hostingplan){
+                    $expiry_date = new  Carbon($cus_hostingplan->expiry_date);
+                    $today_date = Carbon::now()->format('y-m-d');
+                    $days_left = $expiry_date->diff($today_date)->days;
+
+                    $notified_before = notification::where('customer_id',1)
+                                                ->where('customer_hosting_plan_id',$cus_hostingplan->hostingplan_id)
+                                                ->where('notification_type','package_expiration')->get();
+
+                    if($days_left <= 10 && empty($notified_before))
+                    {
+                        $customer_package = hostingPlan::find($cus_hostingplan->hostingplan_id);
+                        $package_name = $customer_package->package_type;
+                        notification::create([
+                            'customer_id' => 1,
+                            'customer_hosting_plan_id' => $cus_hostingplan->hostingplan_id,
+                            'notification_type' => 'package_expiration',
+                            'content' => 'Your subscirption in package : '.$package_name." will expire in : ".$days_left." please renew this package if you wish to use it "
+                        ]);
+                    }
+                }
+
+                    $customer_info = [
+                        'id' => 1,
+                        'f_name' => $user->f_name,
+                        'l_name' => $user->l_name,
+                        'address' => $user->address,
+                        'email' => $user->email,
+                        'phone' => $user->phone,
+                        'company_name' => $customer->company_name,
+                    ];
+
+
+
+                    return response()->json($customer_info);
+            }
+            else{
+                return response()->json(['status' => 'failed',
+                                         'message' => 'Customer has no record in `user` table']);
+            }
+        }
+        else{
+                return response()->json(['status' => 'failed',
+                                         'message' => 'Customer not found']);
+        }
+    }
     public function index()
     {
         //
@@ -134,9 +194,19 @@ class CustomerController extends Controller
     public function destroy(customer $customer, $id)
     {
         $customer = customer::find($id);
+        $user_id = $customer->user_id;
+        $user = User::find($user_id);
         if ($customer->delete()) {
-            return response()->json(['status' => 'success',
-                                     'message' => 'Customer deleted successfully']);
+            if($user->delete()){
+                activities_log::create([
+                    'user_id' => 4,
+                    'activity_type' => 'delete',
+                    'on_table' => 'customers',
+                    'record_id' => $id
+                ]);
+                return response()->json(['status' => 'success',
+                                        'message' => 'Customer deleted successfully']);
+         }
         } else {
             return response()->json(['status' => 'failed',
                                      'message' => 'Customer deletion failed']);

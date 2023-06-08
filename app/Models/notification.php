@@ -10,9 +10,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class notification extends Model
 {
     use HasFactory ,SoftDeletes;
-    protected $fillable = ['customer_id','content','seen_by_admin','seen_by_customer'];
+    protected $fillable = ['customer_id','customer_hosting_plan_id','notification_type','content','seen_by_customer'];
     public function customer():BelongsTo
     {
         return $this->belongsTo(customer::class);
+    }
+    public function customer_hosting_plan():BelongsTo
+    {
+        return $this->belongsTo(customerHostingPlan::class);
     }
 }

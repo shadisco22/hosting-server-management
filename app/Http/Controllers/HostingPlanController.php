@@ -12,7 +12,9 @@ class HostingPlanController extends Controller
      */
     public function index()
     {
-        return ["packages" => hostingPlan::all()];
+        $packages = hostingPlan::all()->where('available','1');
+
+        return response()->json(['packages' => $packages],200);
     }
 
     /**

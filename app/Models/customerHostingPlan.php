@@ -20,4 +20,8 @@ class customerHostingPlan extends Model
     {
         return $this->belongsTo(hostingPlan::class, 'hostingplan_id');
     }
+    public function notification():HasMany
+    {
+        return $this->hasMany(notification::class);
+    }
 }
