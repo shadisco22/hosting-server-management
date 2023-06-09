@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class activities_log extends Model
 {
     use HasFactory ,SoftDeletes;
-    protected $fillable = ['user_id', 'activity_type', 'activity_type', 'record_id'];
+    protected $fillable = ['user_id', 'activity_type', 'on_table', 'record_id'];
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

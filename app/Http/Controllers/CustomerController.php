@@ -76,6 +76,7 @@ class CustomerController extends Controller
                         'email' => $user->email,
                         'phone' => $user->phone,
                         'company_name' => $customer->company_name,
+                        'packages'=> $cus_hostingplans
                     ];
 
 

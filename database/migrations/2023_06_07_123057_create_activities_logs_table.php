@@ -17,7 +17,7 @@ return new class extends Migration
             $table->enum('activity_type', [
                 'create', 'update', 'delete', 'approve',
                 'declined', 'open', 'close'
-            ]);
+            ])->default('create');
             $table->enum('on_table', ['users', 'customers', 'orders', 'hosting_plans', 'support_tickets'])->default('users');
             $table->integer('record_id');
             $table->timestamps();
