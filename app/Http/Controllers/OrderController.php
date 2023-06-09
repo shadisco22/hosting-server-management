@@ -94,18 +94,8 @@ class OrderController extends Controller
             $user = User::find($customer->user_id);
             $hosting_plan = hostingPlan::find($order->hostingplan_id);
             $payment_method = ($order->paymentId == null)? 'Al-haram':'Paypal';
-           if($id == null){
-                $orders->push([
-                    'order_id' => $order->id,
-                    'customer_fname' => $user->f_name,
-                    'customer_lname' => $user->l_name,
-                    'package_name' => $hosting_plan->package_type,
-                    'payment_method' => $payment_method,
-                    'created_at' => $order->created_at,
-                    'currency' => $order->currency,
-                    'final_price' => $order->final_price
-                ]);
-        }elseif($payment_method == 'Al-haram'){
+
+         if($payment_method == 'Al-haram'){
                 $orders->push([
                     'order_id' => $order->id,
                     'customer_fname' => $user->f_name,
@@ -115,7 +105,7 @@ class OrderController extends Controller
                     'created_at' => $order->created_at,
                     'currency' => $order->currency,
                     'final_price' => $order->final_price,
-                    'image' => base64_encode(File::get(storage_path($order->receipt_path)))
+                    'image' => $order->receipt_path
                 ]);
         }else {
             $orders->push([
