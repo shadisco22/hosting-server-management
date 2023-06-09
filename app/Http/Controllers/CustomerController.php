@@ -44,12 +44,14 @@ class CustomerController extends Controller
         if($customer != null){
             $user = User::find($customer->user_id);
             if($user != null){
+                $packages = collect([]);
                 $cus_hostingplans = customer::find($customer_id)->customerHostingPlan()->get();
                 $days_left = -1;
                 foreach($cus_hostingplans as $cus_hostingplan){
                     $expiry_date = new  Carbon($cus_hostingplan->expiry_date);
                     $today_date = Carbon::now()->format('y-m-d');
                     $days_left = $expiry_date->diff($today_date)->days;
+                    if($days_left < 0){$days_left = 0;}
 
                     $notified_before = notification::where('customer_id',1)
                                                 ->where('customer_hosting_plan_id',$cus_hostingplan->hostingplan_id)
@@ -66,6 +68,17 @@ class CustomerController extends Controller
                             'content' => 'Your subscirption in package : '.$package_name." will expire in : ".$days_left." please renew this package if you wish to use it "
                         ]);
                     }
+                    $package = hostingPlan::find($cus_hostingplan->id);
+                    $created_at_date = new Carbon($cus_hostingplan->created_at);
+                    $created_at_date = $created_at_date->format('y-m-d');
+                    $packages->push([
+                        'package_name' => $package->package_type,
+                        'package_space' => $package->space,
+                        'package_used_space' => '20',
+                        'created_at' => '20'.$created_at_date,
+                        'expire_at' => $cus_hostingplan->expiry_date,
+                        'days_left' => $days_left
+                    ]);
                 }
 
                     $customer_info = [
@@ -76,7 +89,7 @@ class CustomerController extends Controller
                         'email' => $user->email,
                         'phone' => $user->phone,
                         'company_name' => $customer->company_name,
-                        'packages'=> $cus_hostingplans
+                        'packages'=> $packages
                     ];
 
 

@@ -56,7 +56,7 @@ Route::delete("admin/deletepackage/{id}", [HostingPlanController::class, 'destro
 Route::put("admin/updatepackage/{id}", [HostingPlanController::class, 'update']);
 Route::get("admin/showpackages", [HostingPlanController::class, 'index']);
 Route::delete("admin/deletecustomer/{id}", [CustomerController::class, 'destroy']);
-Route::get("admin/showorders/{id}", [OrderController::class, 'index']);
+Route::get("admin/showorder/{id}", [OrderController::class, 'index']);
 Route::get("admin/showorders", [OrderController::class, 'index']);
 Route::get("admin/activitieslog",[ActivitiesLogController::class, 'index']);
 
@@ -65,4 +65,4 @@ Route::group(['middleware' => ['auth:sanctum', 'checkRole:Operator']], function 
 
 });
 Route::get("operator/showorders", [OrderController::class, 'index']);
-Route::get("operator/showorders/{id}", [OrderController::class, 'index']);
+Route::get("operator/showorder/{id}", [OrderController::class, 'index']);

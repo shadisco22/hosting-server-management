@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\order;
+use App\Models\customer;
+use App\Models\User;
+use App\Models\hostingPlan;
 use Exception;
 use Illuminate\Http\Request;
 use Omnipay\Omnipay;
-use App\Models\hostingPlan;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\File;
 
 class OrderController extends Controller
 {
@@ -81,16 +84,55 @@ class OrderController extends Controller
     {
         return redirect()->to('http://localhost:8080/Customer_mainpage?status=Customer_Declined_Payment')->send();
     }
-    public function index($id = -1)
+    public function index($id = null)
     {
 
-        if ($id == -1)
-            return order::all();
+        $orders = collect([]);
+        $_orders = order::all()->where('status','waiting');
+        foreach($_orders as $order){
+            $customer = customer::find($order->customer_id);
+            $user = User::find($customer->user_id);
+            $hosting_plan = hostingPlan::find($order->hostingplan_id);
+            $payment_method = ($order->paymentId == null)? 'Al-haram':'Paypal';
+           if($id == null){
+                $orders->push([
+                    'order_id' => $order->id,
+                    'customer_fname' => $user->f_name,
+                    'customer_lname' => $user->l_name,
+                    'package_name' => $hosting_plan->package_type,
+                    'payment_method' => $payment_method,
+                    'created_at' => $order->created_at,
+                    'currency' => $order->currency,
+                    'final_price' => $order->final_price
+                ]);
+        }elseif($payment_method == 'Al-haram'){
+                $orders->push([
+                    'order_id' => $order->id,
+                    'customer_fname' => $user->f_name,
+                    'customer_lname' => $user->l_name,
+                    'package_name' => $hosting_plan->package_type,
+                    'payment_method' => $payment_method,
+                    'created_at' => $order->created_at,
+                    'currency' => $order->currency,
+                    'final_price' => $order->final_price,
+                    'image' => base64_encode(File::get(storage_path($order->receipt_path)))
+                ]);
+        }else {
+            $orders->push([
+                'order_id' => $order->id,
+                'customer_fname' => $user->f_name,
+                'customer_lname' => $user->l_name,
+                'package_name' => $hosting_plan->package_type,
+                'payment_method' => $payment_method,
+                'created_at' => $order->created_at,
+                'currency' => $order->currency,
+                'final_price' => $order->final_price,
+                'paypal_payment_id' => $order->paymentId
+            ]);
+        }
+        }
+        return response()->json(['orders' => $orders]);
 
-        else if (order::find($id))
-            return order::find($id);
-
-        else return ['status' => 'order not found'];
     }
 
     /**
@@ -123,8 +165,8 @@ class OrderController extends Controller
         $order = new order();
         $order->customer_id = $request->customer_id;
         $order->hostingplan_id = $request->hostingplan_id;
-        $order->receipt_path ="storage/app/".$path;
-        $order->currency = env('PAYPAL_CURRENCY');
+        $order->receipt_path ="/app/".$path;
+        $order->currency = 'SYP';
         $order->paymentId = null;
         $order->status = "waiting";
         $order->final_price = $request->final_price;
