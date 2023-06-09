@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Omnipay\Omnipay;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
+use Carbon\Carbon;
+
 
 class OrderController extends Controller
 {
@@ -94,6 +96,8 @@ class OrderController extends Controller
             $user = User::find($customer->user_id);
             $hosting_plan = hostingPlan::find($order->hostingplan_id);
             $payment_method = ($order->paymentId == null)? 'Al-haram':'Paypal';
+            $created_at_date = new Carbon($order->created_at);
+            $created_at_date = '20'.$created_at_date->format('y-m-d');
 
          if($payment_method == 'Al-haram'){
                 $orders->push([
@@ -102,7 +106,7 @@ class OrderController extends Controller
                     'customer_lname' => $user->l_name,
                     'package_name' => $hosting_plan->package_type,
                     'payment_method' => $payment_method,
-                    'created_at' => $order->created_at,
+                    'created_at' => $created_at_date,
                     'currency' => $order->currency,
                     'final_price' => $order->final_price,
                     'image' => $order->receipt_path
@@ -150,12 +154,12 @@ class OrderController extends Controller
         $image_file = $request->file('receipt');
         //image name format is : c_id-p_id-time.extension as (customer_id-plan_id-time.extension)
         $image_name = "c_" . $request->customer_id . "-p_" . $request->hostingplan_id . "-" . time() .".". $image_file->extension();
-        $path = $image_file->storeAs('receipts', $image_name);
+        $path = $image_file->move(public_path('receipts'),$image_name);
 
         $order = new order();
         $order->customer_id = $request->customer_id;
         $order->hostingplan_id = $request->hostingplan_id;
-        $order->receipt_path ="/app/".$path;
+        $order->receipt_path = $path;
         $order->currency = 'SYP';
         $order->paymentId = null;
         $order->status = "waiting";

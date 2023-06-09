@@ -70,3 +70,4 @@ Route::group(['middleware' => ['auth:sanctum', 'checkRole:Operator']], function 
 
 });
 Route::get("operator/showorders", [OrderController::class, 'index']);
+Route::get('operator/info', [Admin::class, 'operatorInfo']);

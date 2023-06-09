@@ -55,6 +55,30 @@ class Admin extends Controller
     //     $user->save();
     //     return response()->json($user);
     // }
+
+    public function operatorInfo()
+    {
+        //Auth::id()
+        $operator_id = 1;
+        $operator = User::find($operator_id);
+            if($operator != null){
+                    $operator_info = [
+                        'id' => 1,
+                        'f_name' => $operator->f_name,
+                        'l_name' => $operator->l_name,
+                        'address' => $operator->address,
+                        'email' => $operator->email,
+                        'phone' => $operator->phone
+                    ];
+
+                    return response()->json($operator_info);
+            }
+            else{
+                return response()->json(['status' => 'failed',
+                                         'message' => 'Operator not found']);
+            }
+    }
+
     public function show()
     {
         $users = User::all()->where('role', '!=', 'Admin');
