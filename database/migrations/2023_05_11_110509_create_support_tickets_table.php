@@ -16,10 +16,9 @@ return new class extends Migration
             $table->foreignId('customer_id');
             $table->foreignId('user_id')->nullable();
             $table->date('open_time');
-            $table->date('close_time');
+            $table->date('close_time')->nullable();
             $table->string('status');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('supportticket_id');
+            $table->foreignId('support_ticket_id');
             $table->string('sender');
             $table->text('message');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

@@ -32,6 +32,8 @@ Route::post('/logout', [Auth::class, 'logout'])->middleware('auth:sanctum');
 // Customer routes
 Route::group(['middleware' => ['auth:sanctum', 'checkRole:Customer']], function () {
     //Route::post('customer/add-company', [\App\Http\Controllers\CustomerController::class, 'addCompany']);
+    Route::post('send-message/{id}',[\App\Http\Controllers\MessageController::class, 'sendMessage']);
+
 
 });
 Route::post('customer/pay', [OrderController::class, 'pay'])->name('pay');
@@ -42,6 +44,10 @@ Route::post("customer/orderpackage", [OrderController::class, 'store']);
 Route::put("customer/editprofile/{id}", [CustomerController::class, 'update']);
 Route::post('customer/alharam', [OrderController::class, 'store']);
 Route::get('customer/info', [CustomerController::class, 'customerInfo']);
+Route::get('get-my-tickets',[\App\Http\Controllers\SupportTicketController::class,'getMyTickets']);
+Route::get('open-ticket',[\App\Http\Controllers\SupportTicketController::class,'openTicket']);
+Route::get('close-ticket/{id}',[\App\Http\Controllers\SupportTicketController::class,'closeTicket']);
+Route::get('get-ticket-messages/{id}',[\App\Http\Controllers\MessageController::class,'getTicketMessages']);
 
 // Admin routes
 Route::group(['middleware' => ['auth:sanctum', 'checkRole:Admin']], function () {
