@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HostingPlanController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SupportTicketController;
+use App\Http\Controllers\MessageController;
+
 use App\Models\hostingPlan;
 
 /*
@@ -32,22 +35,24 @@ Route::post('/logout', [Auth::class, 'logout'])->middleware('auth:sanctum');
 // Customer routes
 Route::group(['middleware' => ['auth:sanctum', 'checkRole:Customer']], function () {
     //Route::post('customer/add-company', [\App\Http\Controllers\CustomerController::class, 'addCompany']);
-    Route::post('send-message/{id}',[\App\Http\Controllers\MessageController::class, 'sendMessage']);
 
+    Route::post('customer/confirmpassword',[CustomerController::class,'confirmPassword']);
+    Route::get('customer/info', [CustomerController::class, 'customerInfo']);
 
 });
 Route::post('customer/pay', [OrderController::class, 'pay'])->name('pay');
 Route::get('customer/success', [OrderController::class, 'success']);
 Route::get('customer/error', [OrderController::class, 'error']);
-Route::get("customer/showpackages", [HostingPlanController::class, 'index']);
-Route::post("customer/orderpackage", [OrderController::class, 'store']);
-Route::put("customer/editprofile/{id}", [CustomerController::class, 'update']);
+Route::get('customer/showpackages', [HostingPlanController::class, 'index']);
+Route::post('customer/orderpackage', [OrderController::class, 'store']);
+Route::put('customer/editprofile/{id}', [CustomerController::class, 'update']);
 Route::post('customer/alharam', [OrderController::class, 'store']);
-Route::get('customer/info', [CustomerController::class, 'customerInfo']);
-Route::get('get-my-tickets',[\App\Http\Controllers\SupportTicketController::class,'getMyTickets']);
-Route::get('open-ticket',[\App\Http\Controllers\SupportTicketController::class,'openTicket']);
-Route::get('close-ticket/{id}',[\App\Http\Controllers\SupportTicketController::class,'closeTicket']);
-Route::get('get-ticket-messages/{id}',[\App\Http\Controllers\MessageController::class,'getTicketMessages']);
+
+Route::get('customer/get-my-tickets',[SupportTicketController::class,'getMyTickets']);
+Route::post('customer/open-ticket',[SupportTicketController::class,'openTicket']);
+Route::post('customer/close-ticket/{id}',[SupportTicketController::class,'closeTicket']);
+Route::get('customer/get-ticket-messages/{id}',[MessageController::class,'getTicketMessages']);
+Route::post('customer/send-message/{id}',[\App\Http\Controllers\MessageController::class, 'sendMessage']);
 
 // Admin routes
 Route::group(['middleware' => ['auth:sanctum', 'checkRole:Admin']], function () {
@@ -68,6 +73,6 @@ Route::get("admin/activitieslog",[ActivitiesLogController::class, 'index']);
 // Operator routes
 Route::group(['middleware' => ['auth:sanctum', 'checkRole:Operator']], function () {
 
+    Route::get('operator/info', [Admin::class, 'operatorInfo']);
 });
 Route::get("operator/showorders", [OrderController::class, 'index']);
-Route::get('operator/info', [Admin::class, 'operatorInfo']);

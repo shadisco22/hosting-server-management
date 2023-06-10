@@ -159,7 +159,7 @@ class OrderController extends Controller
         $order = new order();
         $order->customer_id = $request->customer_id;
         $order->hostingplan_id = $request->hostingplan_id;
-        $order->receipt_path = $path;
+        $order->receipt_path = $image_name;
         $order->currency = 'SYP';
         $order->paymentId = null;
         $order->status = "waiting";

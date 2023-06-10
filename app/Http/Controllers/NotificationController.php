@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
+    public function getCustomerNotifications()
+    {
+
+    }
+
+
     /**
      * Display a listing of the resource.
      */

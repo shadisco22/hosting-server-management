@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
@@ -32,6 +33,23 @@ class CustomerController extends Controller
     // }
 
 
+    public function confirmPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 'failed',
+                                     'message' => $validator->errors()]);
+        }
+        if(Hash::check($request->password,Auth::user()->password)){
+            return response()->json(['status' => 'success',
+                                     'message' => 'Password is correct']);
+        }else{
+            return response()->json(['status' => 'failed',
+                                     'message' => 'Incorrect password']);
+        }
+    }
 
     /**
      * Display a listing of the resource.
@@ -39,8 +57,8 @@ class CustomerController extends Controller
     public function customerInfo()
     {
         //Auth::id()
-        $customer_id = 1;
-        $customer = customer::find($customer_id);
+        $customer = customer::where('user_id',Auth::id())->first();
+        $customer_id = $customer->id;
         if($customer != null){
             $user = User::find($customer->user_id);
             if($user != null){
@@ -62,7 +80,7 @@ class CustomerController extends Controller
                         $customer_package = hostingPlan::find($cus_hostingplan->hostingplan_id);
                         $package_name = $customer_package->package_type;
                         notification::create([
-                            'customer_id' => 1,
+                            'customer_id' => $customer_id,
                             'customer_hosting_plan_id' => $cus_hostingplan->hostingplan_id,
                             'notification_type' => 'package_expiration',
                             'content' => 'Your subscirption in package : '.$package_name." will expire in : ".$days_left." please renew this package if you wish to use it "
@@ -82,7 +100,7 @@ class CustomerController extends Controller
                 }
 
                     $customer_info = [
-                        'id' => 1,
+                        'id' => $customer_id,
                         'f_name' => $user->f_name,
                         'l_name' => $user->l_name,
                         'address' => $user->address,
@@ -154,10 +172,8 @@ class CustomerController extends Controller
             'f_name' => 'required|string|max:255',
             'l_name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|max:255',
-            'password' => 'required|string|min:4',
-            'company_name' => 'required|string|min:1'
+            'company_name' => 'required|string|min:2'
         ]);
 
         if ($validator->fails()) {
@@ -172,8 +188,6 @@ class CustomerController extends Controller
                     'l_name' => $request->l_name,
                     'address' => $request->address,
                     'phone' => $request->phone,
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
                 ]);
                 customer::whereId($customer->id)->update([
                     'company_name' => $request->company_name

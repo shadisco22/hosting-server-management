@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-
+use Carbon\Carbon;
 
 class Admin extends Controller
 {
@@ -59,11 +59,11 @@ class Admin extends Controller
     public function operatorInfo()
     {
         //Auth::id()
-        $operator_id = 1;
+        $operator_id = Auth::id();
         $operator = User::find($operator_id);
             if($operator != null){
                     $operator_info = [
-                        'id' => 1,
+                        'id' => Auth::id(),
                         'f_name' => $operator->f_name,
                         'l_name' => $operator->l_name,
                         'address' => $operator->address,
@@ -82,8 +82,38 @@ class Admin extends Controller
     public function show()
     {
         $users = User::all()->where('role', '!=', 'Admin');
-        $customers = customer::all();
-        return response()->json(['users' => $users, 'customers' => $customers]);
+        $_users = collect([]);
+        foreach($users as $user){
+            $created_at = new  Carbon($user->created_at);
+            $created_at = '20'.$created_at->format('y-m-d');
+            if($user->role == 'Customer'){
+                $customer = customer::where('user_id',$user->id)->first();
+                $_users->push([
+                    'id' => $customer->id,
+                    'f_name' => $user->f_name,
+                    'l_name' => $user->l_name,
+                    'role' => $user->role,
+                    'email' => $user->email,
+                    'address' => $user->address,
+                    'phone' => $user->phone,
+                    'company_name' => $customer->company_name,
+                    'created_at' => $created_at
+                ]);
+            }else{
+                $_users->push([
+                    'id' => $user->id,
+                    'f_name' => $user->f_name,
+                    'l_name' => $user->l_name,
+                    'role' => $user->role,
+                    'email' => $user->email,
+                    'address' => $user->address,
+                    'phone' => $user->phone,
+                    'created_at' => $created_at
+                ]);
+
+            }
+        }
+        return response()->json(['users' => $_users]);
     }
     public function update(Request $request, User $operator, $id)
     {

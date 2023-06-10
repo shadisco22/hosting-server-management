@@ -58,7 +58,8 @@ class Auth extends Controller
     {
         if (!\Illuminate\Support\Facades\Auth::attempt($request->only('email', 'password'))) {
             return response()
-                ->json(['status' => 'failed','message' => 'incorrect email or password']);
+                ->json(['status' => 'failed',
+                        'message' => 'incorrect email or password']);
         }
 
 
