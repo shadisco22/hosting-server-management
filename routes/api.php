@@ -56,6 +56,7 @@ Route::post('customer/send-message/{id}',[\App\Http\Controllers\MessageControlle
 
 // Admin routes
 Route::group(['middleware' => ['auth:sanctum', 'checkRole:Admin']], function () {
+        Route::get('admin/info', [Admin::class, 'adminInfo']);
 });
 Route::post('admin/createoperator', [Admin::class, 'createOperator']);
 Route::put('admin/updateoperator/{id}',[Admin::class , 'update']);

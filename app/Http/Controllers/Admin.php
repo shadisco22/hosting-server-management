@@ -79,6 +79,29 @@ class Admin extends Controller
             }
     }
 
+     public function adminInfo()
+    {
+        //Auth::id()
+        $admin_id = Auth::id();
+        $admin = User::find($admin_id);
+            if($admin != null){
+                    $admin_info = [
+                        'id' => Auth::id(),
+                        'f_name' => $admin->f_name,
+                        'l_name' => $admin->l_name,
+                        'address' => $admin->address,
+                        'email' => $admin->email,
+                        'phone' => $admin->phone
+                    ];
+
+                    return response()->json($admin_info);
+            }
+            else{
+                return response()->json(['status' => 'failed',
+                                         'message' => 'Admin not found']);
+            }
+    }
+
     public function show()
     {
         $users = User::all()->where('role', '!=', 'Admin');
