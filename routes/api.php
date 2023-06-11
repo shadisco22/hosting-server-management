@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ActivitiesLogController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
@@ -38,6 +39,16 @@ Route::group(['middleware' => ['auth:sanctum', 'checkRole:Customer']], function 
 
     Route::post('customer/confirmpassword',[CustomerController::class,'confirmPassword']);
     Route::get('customer/info', [CustomerController::class, 'customerInfo']);
+    Route::get('customer/get_notifications', [NotificationController::class, 'getNotifications']);
+    Route::get('customer/get_all_notifications', [NotificationController::class, 'getAllNotifications']);
+    Route::get('customer/seen_notifications/{id}', [NotificationController::class, 'seenNotification']);
+
+    Route::get('customer/get-my-tickets',[SupportTicketController::class,'getMyTickets']);
+    Route::get('customer/open-ticket',[SupportTicketController::class,'openTicket']);
+    Route::post('customer/close-ticket/{id}',[SupportTicketController::class,'closeTicket']);
+    Route::get('customer/get-ticket-messages/{id}',[MessageController::class,'getTicketMessages']);
+    Route::post('customer/send-message/{id}',[\App\Http\Controllers\MessageController::class, 'sendMessage']);
+
 
 });
 Route::post('customer/pay', [OrderController::class, 'pay'])->name('pay');
@@ -48,15 +59,13 @@ Route::post('customer/orderpackage', [OrderController::class, 'store']);
 Route::put('customer/editprofile/{id}', [CustomerController::class, 'update']);
 Route::post('customer/alharam', [OrderController::class, 'store']);
 
-Route::get('customer/get-my-tickets',[SupportTicketController::class,'getMyTickets']);
-Route::post('customer/open-ticket',[SupportTicketController::class,'openTicket']);
-Route::post('customer/close-ticket/{id}',[SupportTicketController::class,'closeTicket']);
-Route::get('customer/get-ticket-messages/{id}',[MessageController::class,'getTicketMessages']);
-Route::post('customer/send-message/{id}',[\App\Http\Controllers\MessageController::class, 'sendMessage']);
 
 // Admin routes
 Route::group(['middleware' => ['auth:sanctum', 'checkRole:Admin']], function () {
         Route::get('admin/info', [Admin::class, 'adminInfo']);
+        Route::get('admin/get_notifications', [NotificationController::class, 'getNotifications']);
+        Route::get('admin/get_all_notifications', [NotificationController::class, 'getAllNotifications']);
+        Route::get('admin/seen_notifications/{id}', [NotificationController::class, 'seenNotification']);
 });
 Route::post('admin/createoperator', [Admin::class, 'createOperator']);
 Route::put('admin/updateoperator/{id}',[Admin::class , 'update']);
@@ -75,5 +84,8 @@ Route::get("admin/activitieslog",[ActivitiesLogController::class, 'index']);
 Route::group(['middleware' => ['auth:sanctum', 'checkRole:Operator']], function () {
 
     Route::get('operator/info', [Admin::class, 'operatorInfo']);
+    Route::get('operator/get_notifications', [NotificationController::class, 'getNotifications']);
+    Route::get('operator/get_all_notifications', [NotificationController::class, 'getAllNotifications']);
+    Route::get('operator/seen_notifications/{id}', [NotificationController::class, 'seenNotification']);
 });
 Route::get("operator/showorders", [OrderController::class, 'index']);

@@ -14,10 +14,13 @@ return new class extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id');
-            $table->foreignId('customer_hosting_plan_id');
+            $table->foreignId('user_id')->nullable();
+            $table->foreignId('customer_hosting_plan_id')->nullable();
             $table->enum('notification_type',['package_expiration','ticket_message','package_approvement']);
+            $table->enum('receiver',['Customer','User'])->nullable();
             $table->string('content');
-            $table->date('seen_by_customer')->nullable();
+            $table->timestamps('seen_by_customer')->nullable();
+            $table->timestamps('seen_by_user')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

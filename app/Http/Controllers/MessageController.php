@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\customer;
 use App\Models\message;
+use App\Models\supportTicket;
+use App\Models\notification;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
@@ -51,6 +53,22 @@ class MessageController extends Controller
             ]
         );
 
+
+        // generating receiver notification
+        $st = supportTicket::find($id);
+        if($st->user_id != null){
+            $receiver = 'Customer';
+            if($checkCustomer != null){
+                $receiver = 'User';
+            }
+            notification::create([
+                'customer_id' => $st->customer_id,
+                'user_id' => $st->user_id,
+                'notification_type' => 'ticket_message',
+                'receiver' => $receiver,
+                'content' => 'You have a new message ',
+            ]);
+        }
         return response()->json($message);
     }
 }

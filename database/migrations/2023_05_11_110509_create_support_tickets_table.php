@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('close_time')->nullable();
             $table->string('status');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

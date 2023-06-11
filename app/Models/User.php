@@ -60,6 +60,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(supportTicket::class);
     }
+    public function notification(): HasMany
+    {
+        return $this->hasMany(notification::class);
+    }
     public function activities_log(): HasMany
     {
         return $this->hasMany(activities_log::class);
