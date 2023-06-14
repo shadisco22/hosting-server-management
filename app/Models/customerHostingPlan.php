@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class customerHostingPlan extends Model
 {
     use HasFactory ,SoftDeletes;
-    protected $fillable = ['customer_id', 'hostingplan_id', 'price', 'expiry_date'];
+    protected $fillable = ['customer_id', 'hostingplan_id', 'price','status', 'expiry_date'];
 
     public function customer(): BelongsTo
     {

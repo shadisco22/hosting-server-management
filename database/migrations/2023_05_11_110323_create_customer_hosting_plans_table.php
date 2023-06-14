@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('customer_id');
             $table->foreignId('hostingplan_id');
             $table->double('price');
+            $table->enum('status',['Active','Inactive'])->default('Active');
             $table->date('expiry_date');
             $table->timestamps();
             $table->softDeletes();

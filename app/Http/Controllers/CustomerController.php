@@ -65,15 +65,21 @@ class CustomerController extends Controller
                 $packages = collect([]);
                 $cus_hostingplans = customer::find($customer_id)->customerHostingPlan()->get();
                 $days_left = -1;
+                $notified_before = [];
+
                 foreach($cus_hostingplans as $cus_hostingplan){
+
                     $expiry_date = new  Carbon($cus_hostingplan->expiry_date);
                     $today_date = Carbon::now()->format('y-m-d');
+                    if($expiry_date->lt($today_date)){customerHostingPlan::find($cus_hostingplan->id)->update(['status' => 'Inactive']);}
                     $days_left = $expiry_date->diff($today_date)->days;
-                    if($days_left < 0){$days_left = 0;}
+                    if($cus_hostingplan->status == 'Inactive'){$days_left = $days_left * -1;}
+                    else{
 
-                    $notified_before = notification::where('customer_id',1)
-                                                ->where('customer_hosting_plan_id',$cus_hostingplan->hostingplan_id)
-                                                ->where('notification_type','package_expiration')->get();
+                    $notified_before = notification::where('customer_id', $customer_id)
+                                                    ->where('customer_hosting_plan_id',$cus_hostingplan->id)
+                                                    ->where('notification_type','package_expiration')->first();
+
 
                     if($days_left <= 10 && empty($notified_before))
                     {
@@ -81,15 +87,18 @@ class CustomerController extends Controller
                         $package_name = $customer_package->package_type;
                         notification::create([
                             'customer_id' => $customer_id,
-                            'customer_hosting_plan_id' => $cus_hostingplan->hostingplan_id,
+                            'customer_hosting_plan_id' => $cus_hostingplan->id,
                             'notification_type' => 'package_expiration',
-                            'content' => 'Your subscirption in package : '.$package_name." will expire in : ".$days_left." please renew this package if you wish to use it "
+                            'content' => 'Your subscirption in package : '.$package_name." will expire in : ".$days_left." please renew this package if you wish to use it ",
+                            'receiver' => 'Customer'
                         ]);
                     }
-                    $package = hostingPlan::find($cus_hostingplan->id);
+                }
+                    $package = hostingPlan::find($cus_hostingplan->hostingplan_id);
                     $created_at_date = new Carbon($cus_hostingplan->created_at);
                     $created_at_date = $created_at_date->format('y-m-d');
                     $packages->push([
+                        'status' => $cus_hostingplan->status,
                         'package_name' => $package->package_type,
                         'package_space' => $package->space,
                         'package_used_space' => '20',
@@ -97,7 +106,7 @@ class CustomerController extends Controller
                         'expire_at' => $cus_hostingplan->expiry_date,
                         'days_left' => $days_left
                     ]);
-                }
+            }
 
                     $customer_info = [
                         'id' => $customer_id,
