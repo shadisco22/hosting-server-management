@@ -236,7 +236,7 @@ class CustomerController extends Controller
         if ($customer->delete()) {
             if($user->delete()){
                 activities_log::create([
-                    'user_id' => 4,
+                    'user_id' => Auth::id(),
                     'activity_type' => 'delete',
                     'on_table' => 'customers',
                     'record_id' => $id
