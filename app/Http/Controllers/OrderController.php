@@ -177,6 +177,26 @@ class OrderController extends Controller
         }
     }
 
+    public function approve(Order $order)
+    {
+        $order->update(['status' => 'approved']);
+        customerHostingPlan::create(
+            [
+                'customer_id' => $order->customer_id,
+                'hostingplan_id' => $order->hostingplan_id,
+                'price' => $order->final_price,
+                'expiry_date' => Carbon::now()->addYear(),
+            ]
+        );
+        return response()->json( 'package approved successfully ');
+    }
+    public function disapprove(Order $order)
+    {
+        $order->update(['status' => 'rejected']);
+
+        return response()->json( 'package disapproved successfully ');
+    }
+
     /**
      * Display the specified resource.
      */

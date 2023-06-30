@@ -117,4 +117,20 @@ class HostingPlanController extends Controller
                                        'message' => 'Hosting plan deletion failed']);}
 
     }
+
+    public function renewHostingPlan()
+    {
+        $customerId = customer::where('user_id', auth()->id())->first()->id;
+        $hostingPlan = customerHostingPlan::where('customer_id', $customerId)->latest()->first();
+        $hostingPlanExpiryDate = $hostingPlan->expiry_date ;
+        $hostingPlan->update(['expiry_date' => Carbon::parse($hostingPlanExpiryDate)->addYear()]);
+    }
+    public function upgradeHostingPlan(hostingPlan $hostingPlan)
+    {
+        $customerId = customer::where('user_id', auth()->id())->first()->id;
+        $customerHostingPlan = customerHostingPlan::where('customer_id', $customerId)->latest()->first();
+        $hostingPlanExpiryDate = $customerHostingPlan->expiry_date ;
+        $customerHostingPlan->update(['expiry_date' => Carbon::parse($hostingPlanExpiryDate)->addYear(), 'hostingplan_id' => $hostingPlan->id, 'price' => $hostingPlan->yearly_price]);
+        $customerHostingPlan->save();
+    }
 }

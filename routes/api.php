@@ -66,6 +66,8 @@ Route::group(['middleware' => ['auth:sanctum', 'checkRole:Admin']], function () 
         Route::get('admin/get_notifications', [NotificationController::class, 'getNotifications']);
         Route::get('admin/get_all_notifications', [NotificationController::class, 'getAllNotifications']);
         Route::get('admin/seen_notifications/{id}', [NotificationController::class, 'seenNotification']);
+        Route::get('admin/renew',[HostingPlanController::class,'renewHostingPlan']);
+        Route::get('admin/upgrade/{hostingPlan}',[HostingPlanController::class,'upgradeHostingPlan']);
 });
 Route::post('admin/createoperator', [Admin::class, 'createOperator']);
 Route::put('admin/updateoperator/{id}',[Admin::class , 'update']);
@@ -83,6 +85,8 @@ Route::get("admin/activitieslog",[ActivitiesLogController::class, 'index']);
 // Operator routes
 Route::group(['middleware' => ['auth:sanctum', 'checkRole:Operator']], function () {
 
+    Route::get('operator/approved/{order}',[\App\Http\Controllers\OrderController::class,'approve']);
+    Route::get('operator/disapproved/{order}',[\App\Http\Controllers\OrderController::class,'disapprove']);
     Route::get('operator/info', [Admin::class, 'operatorInfo']);
     Route::get('operator/get_notifications', [NotificationController::class, 'getNotifications']);
     Route::get('operator/get_all_notifications', [NotificationController::class, 'getAllNotifications']);
