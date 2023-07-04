@@ -130,7 +130,9 @@ class HostingPlanController extends Controller
         $customerId = customer::where('user_id', auth()->id())->first()->id;
         $customerHostingPlan = customerHostingPlan::where('customer_id', $customerId)->latest()->first();
         $hostingPlanExpiryDate = $customerHostingPlan->expiry_date ;
-        $customerHostingPlan->update(['expiry_date' => Carbon::parse($hostingPlanExpiryDate)->addYear(), 'hostingplan_id' => $hostingPlan->id, 'price' => $hostingPlan->yearly_price]);
+        $customerHostingPlan->update(['expiry_date' => Carbon::parse($hostingPlanExpiryDate)->addYear(),
+                                      'hostingplan_id' => $hostingPlan->id,
+                                      'price' => $hostingPlan->yearly_price]);
         $customerHostingPlan->save();
     }
 }

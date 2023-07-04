@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('currency');
             $table->string('receipt_path')->nullable();
             $table->string('status');
+            $table->enum('request_type',['Purchase', 'Renew', 'Upgrade', 'Reactive'])->default('Purchase');
+            $table->enum('hostingplan_type',['BRONZE','SILVER','GOLD'])->default('BRONZE');
             $table->double('final_price');
             $table->timestamps();
             $table->softDeletes();

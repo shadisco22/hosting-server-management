@@ -6,6 +6,7 @@ use App\Models\order;
 use App\Models\customer;
 use App\Models\User;
 use App\Models\hostingPlan;
+use App\Models\customerHostingPlan;
 use Exception;
 use Illuminate\Http\Request;
 use Omnipay\Omnipay;
@@ -40,8 +41,8 @@ class OrderController extends Controller
             $response = $this->gateway->purchase(array(
                 'amount' => $final_price,
                 'currency' => env('PAYPAL_CURRENCY'),
-                'returnUrl' => url('https://da19-46-213-123-153.ngrok-free.app/api/customer/success?customer_id='.$customer_id.'&package_id='.$package_id.'&final_price='.$final_price.''),
-                'cancelUrl' => url('https://da19-46-213-123-153.ngrok-free.app/api/customer/error'),
+                'returnUrl' => url('https://3b9d-31-9-64-111.ngrok-free.app/api/customer/success?customer_id='.$customer_id.'&package_id='.$package_id.'&final_price='.$final_price.''),
+                'cancelUrl' => url('https://3b9d-31-9-64-111.ngrok-free.app/api/customer/error'),
                 'description' => $description
             ))->send();
             if ($response->isRedirect()) {
@@ -63,6 +64,7 @@ class OrderController extends Controller
             $package_id = $request->input('package_id');
             $final_price = $request->input('final_price');
 
+
             $response = $transaction->send();
             if ($response->isSuccessful()) {
                 $arr = $response->getData();
@@ -73,9 +75,8 @@ class OrderController extends Controller
                 $order->currency = env('PAYPAL_CURRENCY');
                 $order->status = "waiting";
                 $order->final_price = $final_price;
-
                 if ($order->save()) {
-                    return redirect()->to('http://localhost:8080/Customer_mainpage?status=Payment_Complete')->send();
+                    return redirect()->to('http://localhost:8080/Customer_mainpage?status=Payment_Complete.&order='.$order.'')->send();
                 }
             } else {
                 return redirect()->to('http://localhost:8080/Customer_mainpage?status=Server_Error')->send();
@@ -101,7 +102,11 @@ class OrderController extends Controller
 
          if($payment_method == 'Al-haram'){
                 $orders->push([
+                    'customer_id'=>$order->customer_id,
                     'order_id' => $order->id,
+                    'hostingplan_id' => $order->hostingplan_id,
+                    'request_type'=>$order->request_type,
+                    'hostingplan_type'=>$order->hostingplan_type,
                     'customer_fname' => $user->f_name,
                     'customer_lname' => $user->l_name,
                     'package_name' => $hosting_plan->package_type,
@@ -113,7 +118,9 @@ class OrderController extends Controller
                 ]);
         }else {
             $orders->push([
+                'customer_id'=>$order->customer_id,
                 'order_id' => $order->id,
+                'hostingplan_id' => $order->hostingplan_id,
                 'customer_fname' => $user->f_name,
                 'customer_lname' => $user->l_name,
                 'package_name' => $hosting_plan->package_type,
@@ -146,7 +153,9 @@ class OrderController extends Controller
             'customer_id' => 'required',
             'hostingplan_id' => 'required',
             'final_price' => 'required',
-            'receipt' => 'required|file|mimes:jpeg,png,jpg'
+            'receipt' => 'required|file|mimes:jpeg,png,jpg',
+            'request_type'=>'required',
+            'hostingplan_type'=>'required'
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors());
@@ -163,6 +172,8 @@ class OrderController extends Controller
         $order->currency = 'SYP';
         $order->paymentId = null;
         $order->status = "waiting";
+        $order->request_type=$request->request_type;
+        $order->hostingplan_type=$request->hostingplan_type;
         $order->final_price = $request->final_price;
         if ($order->save()) {
             return response()->json([
@@ -188,13 +199,13 @@ class OrderController extends Controller
                 'expiry_date' => Carbon::now()->addYear(),
             ]
         );
-        return response()->json( 'package approved successfully ');
+        return response()->json( 'package approved successfully');
     }
     public function disapprove(Order $order)
     {
         $order->update(['status' => 'rejected']);
 
-        return response()->json( 'package disapproved successfully ');
+        return response()->json( 'package disapproved successfully');
     }
 
     /**

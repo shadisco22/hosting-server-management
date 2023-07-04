@@ -11,6 +11,15 @@ use App\Http\Controllers\HostingPlanController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\AddUserTest;
+use App\Http\Controllers\GetDiskUsage;
+use App\Http\Controllers\ChangePlanAccount;
+use App\Http\Controllers\DeleteUserTest;
+use App\Http\Controllers\ListAccTest;
+use App\Http\Controllers\SuspendAccount;
+use App\Http\Controllers\UnSuspendAccount;
+
+
 
 use App\Models\hostingPlan;
 
@@ -48,17 +57,25 @@ Route::group(['middleware' => ['auth:sanctum', 'checkRole:Customer']], function 
     Route::post('customer/close-ticket/{id}',[SupportTicketController::class,'closeTicket']);
     Route::get('customer/get-ticket-messages/{id}',[MessageController::class,'getTicketMessages']);
     Route::post('customer/send-message/{id}',[\App\Http\Controllers\MessageController::class, 'sendMessage']);
-
+    Route::post('customer/alharam', [OrderController::class, 'store']);
+    Route::post('customer/approved/{order}',[\App\Http\Controllers\OrderController::class,'approve']);
+    Route::get('/list-acc-test', [ListAccTest::class, 'listAccounts']);
+    Route::get('/get-usage-disk', [GetDiskUsage::class, 'getDiskUsage']);
+    Route::post('customer/add-acc-test', [AddUserTest::class, 'addAccount']);
+    Route::get('customer/showpackages', [HostingPlanController::class, 'index']);
+    Route::post('customer/orderpackage', [OrderController::class, 'store']);
+    Route::put('customer/editprofile/{id}', [CustomerController::class, 'update']);
+    Route::post('customer/renew',[HostingPlanController::class,'renewHostingPlan']);
+    Route::post('customer/upgrade/{hostingPlan}',[HostingPlanController::class,'upgradeHostingPlan']);
+    Route::post('customer/change-plan', [ChangePlanAccount::class, 'changePackage']);
 
 });
 Route::post('customer/pay', [OrderController::class, 'pay'])->name('pay');
 Route::get('customer/success', [OrderController::class, 'success']);
 Route::get('customer/error', [OrderController::class, 'error']);
-Route::get('customer/showpackages', [HostingPlanController::class, 'index']);
-Route::post('customer/orderpackage', [OrderController::class, 'store']);
-Route::put('customer/editprofile/{id}', [CustomerController::class, 'update']);
-Route::post('customer/alharam', [OrderController::class, 'store']);
 
+
+Route::get('/delete-acc-test', [DeleteUserTest::class, 'deleteAccount']);
 
 // Admin routes
 Route::group(['middleware' => ['auth:sanctum', 'checkRole:Admin']], function () {
@@ -66,20 +83,24 @@ Route::group(['middleware' => ['auth:sanctum', 'checkRole:Admin']], function () 
         Route::get('admin/get_notifications', [NotificationController::class, 'getNotifications']);
         Route::get('admin/get_all_notifications', [NotificationController::class, 'getAllNotifications']);
         Route::get('admin/seen_notifications/{id}', [NotificationController::class, 'seenNotification']);
-        Route::get('admin/renew',[HostingPlanController::class,'renewHostingPlan']);
-        Route::get('admin/upgrade/{hostingPlan}',[HostingPlanController::class,'upgradeHostingPlan']);
+        Route::post('approved/{order}',[\App\Http\Controllers\OrderController::class,'approve']);
+        Route::post('admin/disapproved/{order}',[\App\Http\Controllers\OrderController::class,'disapprove']);
+        Route::get('admin/showusers', [Admin::class, 'show']);
+        Route::post("admin/addpackage", [HostingPlanController::class, 'store']);
+        Route::delete("admin/deletepackage/{id}", [HostingPlanController::class, 'destroy']);
+        Route::put("admin/updatepackage/{id}", [HostingPlanController::class, 'update']);
+        Route::get("admin/showpackages", [HostingPlanController::class, 'index']);
+        Route::post('admin/createoperator', [Admin::class, 'createOperator']);
+        Route::put('admin/updateoperator/{id}',[Admin::class , 'update']);
+        Route::delete("admin/deleteoperator/{id}", [Admin::class, 'destroy']);
+        Route::delete("admin/deletecustomer/{id}", [CustomerController::class, 'destroy']);
+        Route::get("admin/showorders", [OrderController::class, 'index']);
+        Route::post('admin/add-acc-test', [AddUserTest::class, 'addAccount']);
+        Route::post('/change-plan', [ChangePlanAccount::class, 'changePackage']);
+        Route::post('/sus-acc', [SuspendAccount::class, 'suspendAccount']);
+        Route::post('/unsus-acc', [UnSuspendAccount::class, 'unsuspendAccount']);
 });
-Route::post('admin/createoperator', [Admin::class, 'createOperator']);
-Route::put('admin/updateoperator/{id}',[Admin::class , 'update']);
-Route::delete("admin/deleteoperator/{id}", [Admin::class, 'destroy']);
-Route::get('admin/showusers', [Admin::class, 'show']);
 
-Route::post("admin/addpackage", [HostingPlanController::class, 'store']);
-Route::delete("admin/deletepackage/{id}", [HostingPlanController::class, 'destroy']);
-Route::put("admin/updatepackage/{id}", [HostingPlanController::class, 'update']);
-Route::get("admin/showpackages", [HostingPlanController::class, 'index']);
-Route::delete("admin/deletecustomer/{id}", [CustomerController::class, 'destroy']);
-Route::get("admin/showorders", [OrderController::class, 'index']);
 Route::get("admin/activitieslog",[ActivitiesLogController::class, 'index']);
 
 // Operator routes
@@ -91,5 +112,5 @@ Route::group(['middleware' => ['auth:sanctum', 'checkRole:Operator']], function 
     Route::get('operator/get_notifications', [NotificationController::class, 'getNotifications']);
     Route::get('operator/get_all_notifications', [NotificationController::class, 'getAllNotifications']);
     Route::get('operator/seen_notifications/{id}', [NotificationController::class, 'seenNotification']);
+    Route::get("operator/showorders", [OrderController::class, 'index']);
 });
-Route::get("operator/showorders", [OrderController::class, 'index']);
